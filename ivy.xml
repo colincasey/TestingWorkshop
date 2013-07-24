@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ivy-module version="2.0">
+    <info organisation="com.radian6" module="testing-workshop" />
+    <configurations>
+        <conf name="compile" />
+        <conf name="test" />
+    </configurations>
+    <dependencies>
+        <dependency org="junit" name="junit" rev="4.10" conf="test->default" />
+    </dependencies>
+</ivy-module>
