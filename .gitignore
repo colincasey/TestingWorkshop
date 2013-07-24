@@ -1,5 +1,6 @@
 *.class
 tmp
+out
 
 # Package Files #
 *.jar
