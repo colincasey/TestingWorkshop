@@ -1,14 +1,39 @@
 <project name="testing-workshop" default="setup" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns="antlib:org.apache.tools.ant">
-    <property name="ivy.install.version" value="2.3.0" />
-    <property name="configurations" value="compile,test" />
-
     <condition property="ivy.home" value="${env.IVY_HOME}">
         <isset property="env.IVY_HOME" />
     </condition>
 
     <property name="ivy.home" value="${user.home}/.ivy-testing-workshop" />
+    <property name="ivy.install.version" value="2.3.0" />
+    <property name="configurations" value="compile,test" />
     <property name="ivy.jar.dir" value="${ivy.home}/lib" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+    <property name="lib.dir" location="lib" />
+    <property name="src.dir" location="src" />
+    <property name="test.dir" location="test" />
+    <property name="build.dir" location="tmp/build" />
+    <property name="compiled.src" location="${build.dir}/src" />
+    <property name="compiled.tests" location="${build.dir}/test" />
+    <property name="reports.dir" location="${build.dir}/reports" />
+    <property name="junit.reports.dir" location="${reports.dir}/junit" />
+
+    <path id="src.classpath">
+        <path refid="compile.path" />
+    </path>
+
+    <path id="test.classpath">
+        <path refid="src.classpath" />
+        <path refid="test.path" />
+        <pathelement path="${compiled.src}" />
+    </path>
+
+    <path id="junit.classpath">
+        <path refid="test.classpath" />
+        <pathelement path="${compiled.tests}" />
+    </path>
+
+    <target name="setup" depends="install-ivy, install-jenkins" />
 
     <target name="download-ivy" unless="offline">
         <echo message="installing ivy..."/>
@@ -30,5 +55,77 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
     </target>
 
-    <target name="setup" depends="install-ivy" />
+    <target name="fetch-dependencies" depends="setup">
+        <echo message="using ivy to resolve dependencies..." />
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" conf="${configurations}" sync="true" />
+        <ivy:report todir="${reports.dir}/ivy-report" conf="${configurations}" graph="false" dot="true" />
+
+        <ivy:cachepath pathid="compile.path" conf="compile" />
+        <ivy:cachepath pathid="test.path" conf="test" />
+    </target>
+
+    <target name="install-jenkins">
+        <echo message="installing jenkins..."/>
+        <!-- download Jenkins from web site so that it can be used even without any special installation -->
+        <get src="http://mirrors.jenkins-ci.org/war/latest/jenkins.war"
+             dest="./jenkins.war" usetimestamp="true"/>
+    </target>
+
+    <target name="start-jenkins">
+        <java jar="jenkins.war" fork="true"></java>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}" />
+    </target>
+
+    <target name="compile-sources" depends="fetch-dependencies">
+        <compile from="${src.dir}" to="${compiled.src}" classpath-id="src.classpath" />
+    </target>
+
+    <target name="compile-tests" depends="compile-sources">
+        <compile from="${test.dir}" to="${compiled.tests}"  classpath-id="test.classpath" />
+    </target>
+
+    <target name="test" depends="clean, compile-tests">
+        <mkdir dir="${junit.reports.dir}/xml" />
+        <mkdir dir="${junit.reports.dir}/html" />
+
+        <junit dir="${basedir}" failureProperty="junit.failure" printsummary="yes" haltonfailure="no">
+            <jvmarg line="-Dfile.encoding=UTF-8" />
+            <sysproperty key="java.awt.headless" value="true"/>
+            <sysproperty key="user.timezone" value="America/Halifax" />
+            <classpath>
+                <path refid="junit.classpath"/>
+            </classpath>
+            <formatter type="xml"/>
+            <formatter type="brief" usefile="false" />
+            <batchtest todir="${junit.reports.dir}/xml">
+                <fileset dir="${compiled.tests}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${junit.reports.dir}">
+            <fileset dir="${junit.reports.dir}/xml" />
+            <report format="frames" todir="${junit.reports.dir}/html" />
+        </junitreport>
+
+        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
+    </target>
+
+    <macrodef name="compile">
+        <attribute name="from" />
+        <attribute name="to" />
+        <attribute name="classpath-id" />
+        <sequential>
+            <echo message="Compiling @{from} to @{to}" />
+            <mkdir dir="@{to}" />
+            <javac destdir="@{to}" encoding="UTF-8" debug="true">
+                <src path="@{from}" />
+                <classpath refid="@{classpath-id}" />
+            </javac>
+        </sequential>
+    </macrodef>
 </project>
