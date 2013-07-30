@@ -6,14 +6,14 @@ import java.io.IOException;
 
 public class NameTag extends TagSupport {
     private static final long serialVersionUID = -7280661464328893136L;
-    private static final String NAME_KEY = "name";
+    private ThreadLocal<String> name = new ThreadLocal<String>();
 
     public String getName() {
-        return (String) this.getValue(NAME_KEY);
+        return this.name.get();
     }
 
     public void setName(String name) {
-        this.setValue(NAME_KEY, name);
+        this.name.set(name);
     }
 
     @Override

@@ -2,77 +2,38 @@ package multithreading;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(Parameterized.class)
 public class NameTagTest {
-    @Test
-    public void test01() throws InterruptedException, ExecutionException {
-        test(1);
+    @Parameterized.Parameters
+    public static Collection<Object[]> threadCount() {
+        Object[][] threadCounts = new Object[][] {
+            { 1 }, { 2 }, { 4 }, { 8 }, { 16 }, { 32 }, { 64 }, { 128 }, { 256 }, { 512 }, { 1024 }
+        };
+        return Arrays.asList(threadCounts);
+    }
+
+    private final int threadCount;
+
+    public NameTagTest(int threadCount) throws InterruptedException, ExecutionException {
+        this.threadCount = threadCount;
     }
 
     @Test
-    public void test02() throws InterruptedException, ExecutionException {
-        test(2);
-    }
-
-    @Test
-    public void test04() throws InterruptedException, ExecutionException {
-        test(4);
-    }
-
-    @Test
-    public void test08() throws InterruptedException, ExecutionException {
-        test(8);
-    }
-
-    @Test
-    public void test16() throws InterruptedException, ExecutionException {
-        test(16);
-    }
-
-    @Test
-    public void test32() throws InterruptedException, ExecutionException {
-        test(32);
-    }
-
-    @Test
-    public void test64() throws InterruptedException, ExecutionException {
-        test(64);
-    }
-
-    @Test
-    public void test128() throws InterruptedException, ExecutionException {
-        test(128);
-    }
-
-    @Test
-    public void test256() throws InterruptedException, ExecutionException {
-        test(256);
-    }
-
-    @Test
-    public void test512() throws InterruptedException, ExecutionException {
-        test(512);
-    }
-
-    @Test
-    public void test1024() throws InterruptedException, ExecutionException {
-        test(1024);
-    }
-
-    private void test(final int threadCount) throws InterruptedException, ExecutionException {
+    public void check_for_thread_safety() throws InterruptedException, ExecutionException {
         // arrange
         final NameTag nameTag = new NameTag();
         int padding = ((Integer) threadCount).toString().length();
