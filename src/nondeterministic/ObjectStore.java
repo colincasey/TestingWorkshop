@@ -47,7 +47,7 @@ public class ObjectStore {
     }
 
     private ArrayList<Object> readObjects() {
-        if(!storageFile.exists()) {
+        if(!storageFile.exists() || storageFile.length() == 0) {
             return new ArrayList<Object>();
         }
 
