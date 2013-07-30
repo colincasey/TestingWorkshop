@@ -1,5 +1,6 @@
 package basics;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -7,70 +8,30 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public class CalculatorTest {
-    @Test
-    public void should_be_able_to_add_2_plus_2_using_assertEquals() throws Exception {
-        // arrange
-        Calculator calculator = new Calculator(); // <-- Calculator is the System Under Test (SUT)
-        int expectedValue = 4;
+    private Calculator calculator;
 
-        // act
-        int actualValue = calculator.add(2, 2);
-
-        // assert
-        assertEquals(expectedValue, actualValue);
+    @Before
+    public void setUp() throws Exception {
+        calculator = new Calculator();
     }
 
     @Test
-    public void should_be_able_to_add_2_plus_2_using_assertTrue() throws Exception {
-        // arrange
-        Calculator calculator = new Calculator(); // <-- Calculator is the System Under Test (SUT)
-        int expectedValue = 4;
-
-        // act
-        int actualValue = calculator.add(2, 2);
-
-        // assert
-        assertTrue(expectedValue == actualValue);
-    }
-
-    @Test
-    public void should_be_able_to_add_2_plus_2_using_equalTo_matcher() throws Exception {
-        // arrange
-        Calculator calculator = new Calculator(); // <-- Calculator is the System Under Test (SUT)
-        int expectedValue = 4;
-
-        // act
-        int actualValue = calculator.add(2, 2);
-
-        // assert
-        assertThat(actualValue, equalTo(expectedValue));
-    }
-
-    @Test
-    public void should_be_able_to_add_2_plus_2_using_is_matcher() throws Exception {
-        // arrange
-        Calculator calculator = new Calculator(); // <-- Calculator is the System Under Test (SUT)
-        int expectedValue = 4;
-
-        // act
-        int actualValue = calculator.add(2, 2);
-
-        // assert
-        assertThat(actualValue, is(expectedValue));
+    public void should_be_able_to_add_two_numbers() throws Exception {
+        assertThat(calculator.add(2, 1), is(3));
     }
 
     @Test
     public void should_be_able_to_subtract_two_numbers() throws Exception {
-        fail();
+        assertThat(calculator.subtract(2, 1), is(1));
     }
 
     @Test
     public void should_be_able_to_multiply_two_numbers() throws Exception {
-        fail();
+        assertThat(calculator.multiply(2, 2), is(4));
     }
 
     @Test
     public void should_be_able_to_divide_two_numbers() throws Exception {
-        fail();
+        assertThat(calculator.divide(1, 2), is(0.5));
     }
 }
