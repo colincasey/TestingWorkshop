@@ -2,7 +2,7 @@ package statics;
 
 public class Main {
     public static void main(String[] args) {
-        UserService userService = new UserService();
+        UserService userService = new UserService(new Database(), new LocalCache());
 
         System.out.println("Slow Queries:");
         printUserDetails(userService.getUser(1));
