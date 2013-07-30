@@ -4,8 +4,17 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class ObjectStore {
-    private final File storageFile = new File("tmp/objectstore.db");
+    private static final File DEFAULT_FILE = new File("tmp/objectstore.db");
+    private final File storageFile;
     private ArrayList<Object> objects = null;
+
+    public ObjectStore() {
+        this(DEFAULT_FILE);
+    }
+
+    public ObjectStore(File storageFile) {
+        this.storageFile = storageFile;
+    }
 
     public int size() {
         return getObjects().size();
