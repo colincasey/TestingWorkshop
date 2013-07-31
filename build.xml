@@ -106,7 +106,9 @@
                 </fileset>
             </batchtest>
         </junit>
+    </target>
 
+    <target name="build" depends="test">
         <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
     </target>
 
@@ -117,7 +119,9 @@
         </junitreport>
     </target>
 
-    <target name="continuous-integration" depends="junit-report" />
+    <target name="continuous-integration" depends="junit-report">
+        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
+    </target>
 
     <macrodef name="compile">
         <attribute name="from" />
