@@ -3,21 +3,12 @@ package mocking;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ccasey
- * Date: 7/30/13
- * Time: 7:23 AM
- * To change this template use File | Settings | File Templates.
- */
 public class LsCommandOutputParserTest {
     @Test
     public void should_return_empty_list_if_no_output() throws Exception {

@@ -4,13 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ccasey
- * Date: 7/30/13
- * Time: 6:40 AM
- * To change this template use File | Settings | File Templates.
- */
 public class CommandExecutor {
     private final Runtime runtime;
     private final String command;
@@ -31,7 +24,8 @@ public class CommandExecutor {
         StringBuilder output = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
-            output.append(line + "\n");
+            output.append(line);
+            output.append("\n");
         }
 
         int exitStatus = process.waitFor();

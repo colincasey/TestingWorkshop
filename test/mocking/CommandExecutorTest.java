@@ -11,13 +11,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ccasey
- * Date: 7/30/13
- * Time: 7:39 AM
- * To change this template use File | Settings | File Templates.
- */
 public class CommandExecutorTest {
     private Runtime mockRuntime;
 
