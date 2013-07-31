@@ -55,7 +55,7 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
     </target>
 
-    <target name="fetch-dependencies" depends="setup">
+    <target name="fetch-dependencies">
         <echo message="using ivy to resolve dependencies..." />
         <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" conf="${configurations}" sync="true" />
         <ivy:report todir="${reports.dir}/ivy-report" conf="${configurations}" graph="false" dot="true" />
@@ -107,13 +107,17 @@
             </batchtest>
         </junit>
 
+        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
+    </target>
+
+    <target name="junit-report" depends="test">
         <junitreport todir="${junit.reports.dir}">
             <fileset dir="${junit.reports.dir}/xml" />
             <report format="frames" todir="${junit.reports.dir}/html" />
         </junitreport>
-
-        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
     </target>
+
+    <target name="continuous-integration" depends="junit-report" />
 
     <macrodef name="compile">
         <attribute name="from" />
